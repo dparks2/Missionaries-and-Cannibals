@@ -92,14 +92,14 @@ def breadth_first_tree_search(initial_state):
   max_depth = -1
   while True:
     if not fifo:
-      print "%d expansions" % num_expansions
+      print ("%d expansions" % num_expansions)
       return None
     node = fifo.popleft()
     if node.depth > max_depth:
       max_depth = node.depth
-      print "[depth = %d] %.2fs" % (max_depth, time.clock())
+      print ("[depth = %d] %.2fs" % (max_depth, time.clock()))
     if node.state.is_goal_state():
-      print "%d expansions" % num_expansions
+      print ("%d expansions" % num_expansions)
       solution = node.extract_solution()
       return solution
     num_expansions += 1
@@ -116,12 +116,12 @@ def main():
   initial_state = State(3,3,1)
   solution = breadth_first_tree_search(initial_state)
   if solution is None:
-    print "no solution"
+    print ("no solution")
   else:
-    print "solution (%d steps):" % len(solution)
+    print ("solution (%d steps):" % len(solution))
     for step in solution:
-      print "%s" % step
-  print "elapsed time: %.2fs" % time.clock()
+      print ("%s" % step)
+  print ("elapsed time: %.2fs" % time.clock())
 
 
 if __name__ == "__main__":
