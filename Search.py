@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 """
   This is a solution to the Missionaries and Cannibalis problem.
   Uses a breadth first search and the representation as described
@@ -82,6 +80,8 @@ class Node(object):
 
 
 def breadth_first_tree_search(initial_state):
+
+  print("BFS")
   initial_node = Node(
                       parent_node=None,
                       state=initial_state,
@@ -105,6 +105,62 @@ def breadth_first_tree_search(initial_state):
     num_expansions += 1
     fifo.extend(node.expand())
 
+def depth_first_tree_search(initial_state):
+
+  print("DFS")
+  initial_node = Node(
+                      parent_node=None,
+                      state=initial_state,
+                      action=None,
+                      depth=0)
+  fifo = deque([initial_node])
+  num_expansions = 0
+  max_depth = -1
+  while True:
+    if not fifo:
+      print ("%d expansions" % num_expansions)
+      return None
+    node = fifo.popleft()
+    if node.depth > max_depth:
+      max_depth = node.depth
+      print ("[depth = %d] %.2fs" % (max_depth, time.clock()))
+    if node.state.is_goal_state():
+      print ("%d expansions" % num_expansions)
+      solution = node.extract_solution()
+      return solution
+    num_expansions += 1
+    fifo.extendleft(node.expand())
+
+def iterative_deepening_depth_first_tree_search(initial_state):
+
+  print("IDDFS")
+  initial_node = Node(
+                      parent_node=None,
+                      state=initial_state,
+                      action=None,
+                      depth=0)
+  current_depth_iteration = -1
+  while True:
+    fifo = deque([initial_node])
+    num_expansions = 0
+    max_depth = -1
+    current_depth_iteration += 1
+    while True:
+      if not fifo:
+        print ("%d expansions" % num_expansions)
+        break
+      node = fifo.popleft()
+      if node.depth > current_depth_iteration:
+        continue
+      if node.depth > max_depth:
+        max_depth = node.depth
+        print ("[depth = %d] %.2fs" % (max_depth, time.clock()))
+      if node.state.is_goal_state():
+        print ("%d expansions" % num_expansions)
+        solution = node.extract_solution()
+        return solution
+      num_expansions += 1
+      fifo.extendleft(node.expand())
 
 def usage():
   print >> sys.stderr, "usage:"
@@ -113,8 +169,24 @@ def usage():
 
 
 def main():
+
   initial_state = State(3,3,1)
-  solution = breadth_first_tree_search(initial_state)
+
+  #Check the arguments passed in
+  if len(sys.argv) == 2:
+    if sys.argv[1] == 'B':
+      solution = breadth_first_tree_search(initial_state)
+    elif sys.argv[1] == 'D':
+      solution = depth_first_tree_search(initial_state)
+    elif sys.argv[1] == 'I':
+      solution = iterative_deepening_depth_first_tree_search(initial_state)
+    else:
+      #BFS is default
+      solution = breadth_first_tree_search(initial_state)
+  else:
+      #BFS is default
+      solution = breadth_first_tree_search(initial_state)
+
   if solution is None:
     print ("no solution")
   else:
